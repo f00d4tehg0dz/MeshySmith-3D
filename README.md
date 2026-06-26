@@ -10,9 +10,6 @@
   <p>
     <a href="LICENSE"><img alt="AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue"></a>
     <a href="https://github.com/f00d4tehg0dz/MeshySmith-3D/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/badge/CI-Playwright%20%2B%20Vitest-success"></a>
-    <img alt="Local first" src="https://img.shields.io/badge/local--first-no%20account-0ea5e9">
-    <img alt="Version 0.4" src="https://img.shields.io/badge/version-0.4.0-2563eb">
-    <img alt="Tech" src="https://img.shields.io/badge/Next.js%2016-Three.js-Manifold-111">
   </p>
 </div>
 
