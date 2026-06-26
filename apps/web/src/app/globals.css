@@ -1,7 +1,52 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is([data-theme="dark"] *));
+
+/* Map shadcn-style Tailwind utilities (bg-background, text-muted-foreground, etc.)
+   onto the project's existing CSS custom properties so the editor's styling stays
+   pixel-perfect while the shadcn primitives just work in both light and dark themes. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--panel);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--panel);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--tile);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--tile);
+  --color-muted-foreground: var(--muted-strong);
+  --color-accent: var(--workplane-soft);
+  --color-accent-foreground: var(--primary);
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--primary);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
 
 :root,
 :root[data-theme="light"] {
+  --radius: 0.625rem;
   --background: #fafafa;
   --foreground: #31465d;
   --topbar: #f9f9fa;
@@ -32,6 +77,22 @@
   --cube-corner-bg: rgba(0, 156, 222, 0.75);
   --button-bg: rgba(255, 255, 255, 0.88);
   --button-bg-hover: #ffffff;
+  /* Editor top toolbar tray */
+  --toolbar-bg: linear-gradient(180deg, #fbfcfd 0%, #f4f7f9 54%, #edf2f5 100%);
+  --toolbar-border: #d2dce5;
+  --toolbar-section-border: rgba(203, 215, 226, 0.82);
+  --toolbar-section-bg: linear-gradient(90deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.1) 44%, rgba(210, 222, 232, 0.18));
+  --toolbar-label: #607589;
+  --toolbar-label-shadow: 0 1px 0 rgba(255, 255, 255, 0.86);
+  --toolbar-icon: #7890a4;
+  --toolbar-icon-disabled: #d6e0e9;
+  --toolbar-icon-hover-bg: rgba(255, 255, 255, 0.66);
+  --toolbar-icon-hover-color: #29465f;
+  --toolbar-icon-hover-shadow: rgba(185, 202, 216, 0.86);
+  --toolbar-icon-active-bg: rgba(255, 255, 255, 0.84);
+  --toolbar-icon-active-color: #0b8dbd;
+  --toolbar-icon-active-ring: rgba(0, 166, 219, 0.28);
+  --toolbar-command-icon-filter: none;
 }
 
 :root[data-theme="dark"] {
@@ -64,6 +125,23 @@
   --cube-corner-bg: rgba(59, 179, 240, 0.78);
   --button-bg: rgba(30, 42, 60, 0.88);
   --button-bg-hover: #25334a;
+  /* Editor top toolbar tray — dark variant */
+  --toolbar-bg: linear-gradient(180deg, #131c28 0%, #18222e 60%, #1a2533 100%);
+  --toolbar-border: #2a3a52;
+  --toolbar-section-border: rgba(58, 77, 107, 0.7);
+  --toolbar-section-bg: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.005) 44%, rgba(15, 22, 32, 0.18));
+  --toolbar-label: #8194ad;
+  --toolbar-label-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  --toolbar-icon: #a8b6c8;
+  --toolbar-icon-disabled: #38465a;
+  --toolbar-icon-hover-bg: rgba(59, 179, 240, 0.12);
+  --toolbar-icon-hover-color: #e2e8f0;
+  --toolbar-icon-hover-shadow: rgba(59, 179, 240, 0.32);
+  --toolbar-icon-active-bg: rgba(59, 179, 240, 0.2);
+  --toolbar-icon-active-color: #3bb3f0;
+  --toolbar-icon-active-ring: rgba(59, 179, 240, 0.45);
+  /* Invert the PNG command icons so the dark line-art reads as light on dark. */
+  --toolbar-command-icon-filter: invert(0.88) hue-rotate(180deg);
 }
 
 * {
@@ -73,13 +151,22 @@
 html,
 body {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   margin: 0;
-  overflow: hidden;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-ui);
   letter-spacing: 0;
+}
+
+/* The editor and the project dashboard manage their own viewport-sized layouts;
+   the body must NOT scroll while either is mounted so their fixed overlays
+   (toolbar, viewport, outliner) stay glued to the viewport edges. The marketing
+   landing page is allowed to scroll normally. */
+body:has(.meshysmith-editor),
+body:has(.dashboard-shell) {
+  height: 100%;
+  overflow: hidden;
 }
 
 button,
@@ -1012,19 +1099,19 @@ button {
   display: flex;
   align-items: stretch;
   height: 76px;
-  background: linear-gradient(180deg, #fbfcfd 0%, #f4f7f9 54%, #edf2f5 100%);
-  border-bottom: 1px solid #d2dce5;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 1px 2px rgba(32, 54, 72, 0.06);
+  background: var(--toolbar-bg);
+  border-bottom: 1px solid var(--toolbar-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 .tool-group {
   display: flex;
   height: 76px;
-  border-right: 1px solid #d7e0e8;
+  border-right: 1px solid var(--toolbar-section-border);
 }
 
 .tool-group.right {
-  border-left: 1px solid #d7e0e8;
+  border-left: 1px solid var(--toolbar-section-border);
 }
 
 .toolbar-section {
@@ -1034,8 +1121,8 @@ button {
   height: 76px;
   flex-direction: column;
   justify-content: flex-start;
-  border-right: 1px solid rgba(203, 215, 226, 0.82);
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.1) 44%, rgba(210, 222, 232, 0.18));
+  border-right: 1px solid var(--toolbar-section-border);
+  background: var(--toolbar-section-bg);
 }
 
 .tool-group .toolbar-section:last-child {
@@ -1050,7 +1137,7 @@ button {
   order: 1;
   height: 24px;
   padding: 6px 9px 0;
-  color: #607589;
+  color: var(--toolbar-label);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
   font-weight: 800;
@@ -1059,7 +1146,7 @@ button {
   text-transform: uppercase;
   letter-spacing: 0;
   white-space: nowrap;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.86);
+  text-shadow: var(--toolbar-label-shadow);
   user-select: none;
 }
 
@@ -1081,7 +1168,7 @@ button {
   width: 43px;
   height: 43px;
   place-items: center;
-  color: #7890a4;
+  color: var(--toolbar-icon);
   background: transparent;
   border-radius: 3px;
   cursor: pointer;
@@ -1089,7 +1176,7 @@ button {
 }
 
 .toolbar-icon.disabled {
-  color: #d6e0e9;
+  color: var(--toolbar-icon-disabled);
   cursor: default;
   opacity: 1;
 }
@@ -1099,15 +1186,15 @@ button {
 }
 
 .toolbar-icon:not(.disabled):hover {
-  background: rgba(255, 255, 255, 0.66);
-  box-shadow: inset 0 0 0 1px rgba(185, 202, 216, 0.86);
-  color: #29465f;
+  background: var(--toolbar-icon-hover-bg);
+  box-shadow: inset 0 0 0 1px var(--toolbar-icon-hover-shadow);
+  color: var(--toolbar-icon-hover-color);
 }
 
 .toolbar-icon.active {
-  background: rgba(255, 255, 255, 0.84);
-  box-shadow: inset 0 0 0 2px rgba(0, 166, 219, 0.28);
-  color: #0b8dbd;
+  background: var(--toolbar-icon-active-bg);
+  box-shadow: inset 0 0 0 2px var(--toolbar-icon-active-ring);
+  color: var(--toolbar-icon-active-color);
 }
 
 .toolbar-icon svg,
@@ -1123,6 +1210,7 @@ button {
   display: block;
   object-fit: contain;
   opacity: 0.96;
+  filter: var(--toolbar-command-icon-filter);
   transform: translateY(var(--toolbar-art-offset-y));
   transition: filter 120ms ease, opacity 120ms ease;
 }
@@ -1174,17 +1262,17 @@ button {
 }
 
 .toolbar-icon.disabled .toolbar-command-icon {
-  filter: grayscale(1) brightness(1.25);
+  filter: var(--toolbar-command-icon-filter) grayscale(1) brightness(1.25);
   opacity: 0.22;
 }
 
 .toolbar-icon:not(.disabled):hover .toolbar-command-icon {
-  filter: contrast(1.08) brightness(0.94) drop-shadow(0 0 4px rgba(0, 156, 222, 0.3));
+  filter: var(--toolbar-command-icon-filter) contrast(1.08) brightness(0.94) drop-shadow(0 0 4px rgba(0, 156, 222, 0.3));
   opacity: 1;
 }
 
 .toolbar-icon.active .toolbar-command-icon {
-  filter: contrast(1.12) brightness(0.9) drop-shadow(0 0 5px rgba(0, 156, 222, 0.38));
+  filter: var(--toolbar-command-icon-filter) contrast(1.12) brightness(0.9) drop-shadow(0 0 5px rgba(0, 156, 222, 0.38));
   opacity: 1;
 }
 

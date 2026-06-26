@@ -4,7 +4,7 @@ async function openEditor(page: import("@playwright/test").Page) {
   await page.addInitScript(() => {
     window.localStorage.setItem("meshysmith.tourDismissed", "true");
   });
-  await page.goto("/?editor=1", { waitUntil: "domcontentloaded" });
+  await page.goto("/app?editor=1", { waitUntil: "domcontentloaded" });
   await expect(page.locator(".workplane-stage")).toBeVisible({ timeout: 90_000 });
   await expect(page.locator(".three-workplane-host canvas")).toBeVisible();
   await page.waitForTimeout(500);

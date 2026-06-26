@@ -5,7 +5,7 @@ test.describe("Shape icons are SVGs and theme-coloured", () => {
     await page.addInitScript(() => {
       window.localStorage.setItem("meshysmith.tourDismissed", "true");
     });
-    await page.goto("/?editor=1", { waitUntil: "domcontentloaded" });
+    await page.goto("/app?editor=1", { waitUntil: "domcontentloaded" });
     await expect(page.locator(".workplane-stage")).toBeVisible({ timeout: 90_000 });
 
     await page.getByRole("button", { name: /add shape/i }).click();
@@ -37,7 +37,7 @@ test.describe("Shape icons are SVGs and theme-coloured", () => {
       window.localStorage.setItem("meshysmith.tourDismissed", "true");
       window.localStorage.setItem("meshysmith.theme", "dark");
     });
-    await page.goto("/?editor=1", { waitUntil: "domcontentloaded" });
+    await page.goto("/app?editor=1", { waitUntil: "domcontentloaded" });
     await expect(page.locator(".workplane-stage")).toBeVisible({ timeout: 90_000 });
     await page.getByRole("button", { name: /add shape/i }).click();
     const colors = await page.locator(".shape-menu-icon").evaluateAll((els) =>
@@ -57,7 +57,7 @@ test.describe("Shape icons are SVGs and theme-coloured", () => {
       window.localStorage.setItem("meshysmith.tourDismissed", "true");
       window.localStorage.setItem("meshysmith.theme", "light");
     });
-    await page.goto("/?editor=1", { waitUntil: "domcontentloaded" });
+    await page.goto("/app?editor=1", { waitUntil: "domcontentloaded" });
     await expect(page.locator(".workplane-stage")).toBeVisible({ timeout: 90_000 });
     await page.getByRole("button", { name: /add shape/i }).click();
     await page.waitForTimeout(200);

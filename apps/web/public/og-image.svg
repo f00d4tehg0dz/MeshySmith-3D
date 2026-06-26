@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="ogTitle ogDesc">
+  <title id="ogTitle">MeshySmith — Free local-first 3D design editor</title>
+  <desc id="ogDesc">Hero card: MeshySmith wordmark, tagline, and isometric primitive shapes on a blue gradient.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0098c7"/>
+      <stop offset="50%" stop-color="#0f4d68"/>
+      <stop offset="100%" stop-color="#0b1220"/>
+    </linearGradient>
+    <linearGradient id="cube" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3bb3f0"/>
+      <stop offset="100%" stop-color="#0098c7"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- subtle grid -->
+  <g stroke="rgba(255,255,255,0.06)" stroke-width="1">
+    <path d="M0 80 L1200 80 M0 160 L1200 160 M0 240 L1200 240 M0 320 L1200 320 M0 400 L1200 400 M0 480 L1200 480 M0 560 L1200 560"/>
+    <path d="M120 0 L120 630 M240 0 L240 630 M360 0 L360 630 M480 0 L480 630 M600 0 L600 630 M720 0 L720 630 M840 0 L840 630 M960 0 L960 630 M1080 0 L1080 630"/>
+  </g>
+
+  <!-- Isometric primitives cluster (right side) -->
+  <g stroke="rgba(255,255,255,0.85)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Box -->
+    <g transform="translate(820 140)">
+      <path d="M80 0 L160 40 L160 110 L80 150 L0 110 L0 40 Z" fill="url(#cube)" fill-opacity="0.85"/>
+      <path d="M0 40 L80 80 L160 40 M80 80 L80 150"/>
+    </g>
+    <!-- Sphere -->
+    <g transform="translate(900 320)">
+      <circle cx="60" cy="60" r="56" fill="rgba(255,255,255,0.18)"/>
+      <ellipse cx="60" cy="60" rx="56" ry="20"/>
+      <path d="M4 60 A 56 56 0 0 0 116 60"/>
+    </g>
+    <!-- Gear -->
+    <g transform="translate(700 380)">
+      <g>
+        <rect x="55" y="-4" width="14" height="22" rx="2" fill="rgba(255,255,255,0.18)"/>
+        <g transform="rotate(45 62 62)"><rect x="55" y="-4" width="14" height="22" rx="2" fill="rgba(255,255,255,0.18)"/></g>
+        <g transform="rotate(90 62 62)"><rect x="55" y="-4" width="14" height="22" rx="2" fill="rgba(255,255,255,0.18)"/></g>
+        <g transform="rotate(135 62 62)"><rect x="55" y="-4" width="14" height="22" rx="2" fill="rgba(255,255,255,0.18)"/></g>
+        <g transform="rotate(180 62 62)"><rect x="55" y="-4" width="14" height="22" rx="2" fill="rgba(255,255,255,0.18)"/></g>
+        <g transform="rotate(225 62 62)"><rect x="55" y="-4" width="14" height="22" rx="2" fill="rgba(255,255,255,0.18)"/></g>
+        <g transform="rotate(270 62 62)"><rect x="55" y="-4" width="14" height="22" rx="2" fill="rgba(255,255,255,0.18)"/></g>
+        <g transform="rotate(315 62 62)"><rect x="55" y="-4" width="14" height="22" rx="2" fill="rgba(255,255,255,0.18)"/></g>
+      </g>
+      <circle cx="62" cy="62" r="28" fill="rgba(255,255,255,0.18)"/>
+      <circle cx="62" cy="62" r="10"/>
+    </g>
+  </g>
+
+  <!-- Wordmark + tagline (left side) -->
+  <g fill="#ffffff">
+    <text x="80" y="240" font-family="Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif" font-weight="800" font-size="92" letter-spacing="-2">MeshySmith</text>
+    <text x="80" y="300" font-family="Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="32" fill="#cfeaf7">Free local-first 3D editor</text>
+  </g>
+
+  <g font-family="Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#e2f2fb">
+    <text x="80" y="380">Drop primitives. Fillet edges. Cut holes.</text>
+    <text x="80" y="412">Import STL. Export STL or OBJ.</text>
+    <text x="80" y="444">No account. No cloud lock-in. AGPL-3.0.</text>
+  </g>
+
+  <g font-family="Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="700" fill="#0b1220">
+    <rect x="80" y="500" width="220" height="56" rx="10" fill="#ffffff"/>
+    <text x="190" y="535" text-anchor="middle">Open the editor →</text>
+  </g>
+  <g font-family="Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">
+    <rect x="320" y="500" width="220" height="56" rx="10" fill="none" stroke="#ffffff" stroke-width="2"/>
+    <text x="430" y="535" text-anchor="middle">Star on GitHub</text>
+  </g>
+
+  <g font-family="Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.7)">
+    <text x="80" y="600">meshysmith.app · 16 primitives · fillet &amp; chamfer · boolean ops · Web · Electron · Docker</text>
+  </g>
+</svg>

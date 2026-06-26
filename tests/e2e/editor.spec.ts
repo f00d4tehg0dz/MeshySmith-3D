@@ -5,7 +5,7 @@ async function openEditor(page: import("@playwright/test").Page) {
     window.localStorage.setItem("meshysmith.tourDismissed", "true");
   });
   // page.tsx auto-opens the editor when the URL has ?editor=1, bypassing the dashboard.
-  await page.goto("/?editor=1", { waitUntil: "domcontentloaded" });
+  await page.goto("/app?editor=1", { waitUntil: "domcontentloaded" });
   await expect(page.locator(".workplane-stage")).toBeVisible({ timeout: 90_000 });
   await expect(page.locator(".three-workplane-host canvas")).toBeVisible({ timeout: 30_000 });
   // Give the ViewCube one paint to mount.
@@ -190,5 +190,29 @@ test.describe("MeshySmith editor", () => {
     await page.getByRole("button", { name: /^export$/i }).click();
     await expect(page.locator(".top-action-panel")).toBeVisible();
     await page.getByRole("button", { name: /close export/i }).click();
+  });
+
+  test("Top toolbar tray retheme in dark mode (background + label + icon colors all flip)", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem("meshysmith.theme", "light");
+    });
+    await openEditor(page);
+
+    const sample = async () => ({
+      tray: await page.locator(".secondary-toolbar").evaluate((el) => getComputedStyle(el).backgroundImage),
+      label: await page.locator(".toolbar-section-label").first().evaluate((el) => getComputedStyle(el).color),
+      icon: await page.locator(".toolbar-icon").first().evaluate((el) => getComputedStyle(el).color),
+    });
+
+    const light = await sample();
+
+    // Cycle theme: light -> dark.
+    await page.locator("[data-theme-toggle]").click();
+    await page.waitForTimeout(80);
+    const dark = await sample();
+
+    expect(dark.tray).not.toBe(light.tray);
+    expect(dark.label).not.toBe(light.label);
+    expect(dark.icon).not.toBe(light.icon);
   });
 });

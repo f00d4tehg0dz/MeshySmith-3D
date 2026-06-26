@@ -3,7 +3,11 @@ const path = require("node:path");
 const fs = require("node:fs");
 
 const staticRoot = path.join(__dirname, "..", "..", "apps", "web", "out");
-const indexPath = path.join(staticRoot, "index.html");
+// The desktop app skips the marketing landing and boots straight into the editor.
+// If the /app subroute isn't present (older export), fall back to /index.html.
+const appIndex = path.join(staticRoot, "app", "index.html");
+const rootIndex = path.join(staticRoot, "index.html");
+const indexPath = fs.existsSync(appIndex) ? appIndex : rootIndex;
 
 function createWindow() {
   const win = new BrowserWindow({

@@ -4,7 +4,7 @@ test("shape palette tabs all visible (no horizontal clipping)", async ({ page })
   await page.addInitScript(() => {
     window.localStorage.setItem("meshysmith.tourDismissed", "true");
   });
-  await page.goto("/?editor=1", { waitUntil: "domcontentloaded" });
+  await page.goto("/app?editor=1", { waitUntil: "domcontentloaded" });
   await expect(page.locator(".workplane-stage")).toBeVisible({ timeout: 90_000 });
   await page.getByRole("button", { name: /add shape/i }).click();
   await expect(page.locator("[data-shape-palette]")).toBeVisible();
