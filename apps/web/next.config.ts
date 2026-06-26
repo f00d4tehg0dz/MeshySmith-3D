@@ -19,7 +19,10 @@ const nextConfig: NextConfig = {
     ? {
         output: "export" as const,
         trailingSlash: true,
-        assetPrefix: "./",
+        // No assetPrefix — emit absolute `/_next/...` paths so nested routes
+        // (e.g. /app/) resolve assets correctly. Docker serves the export root
+        // through nginx, and Electron registers a `file:` protocol handler that
+        // resolves absolute paths against `apps/web/out/` (see deploy/electron/main.js).
       }
     : {}),
 };
