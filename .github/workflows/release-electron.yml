@@ -1,0 +1,153 @@
+name: Release Electron builds
+
+# Fans out across Windows / macOS / Linux runners, builds the platform-native
+# Electron installers, and attaches them to the matching GitHub Release.
+#
+# Triggers:
+#  - Pushing a version tag like `v0.4.0` (matches package.json's semver).
+#  - Manually via the Actions tab — supply the tag name when dispatching.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag name to attach the builds to (e.g. v0.4.0). Must already exist."
+        required: true
+        type: string
+      draft:
+        description: "Create the release as a draft (recommended for first run)."
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  group: release-electron-${{ github.ref_name || inputs.tag }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  # Skip Electron-builder's auto-discovery of signing certs. We ship unsigned
+  # builds (open-source project, no purchased certs). Users will see the usual
+  # Gatekeeper / SmartScreen warnings on first launch.
+  CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+jobs:
+  build:
+    name: Build ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: Linux (AppImage)
+            script: electron:dist:linux
+            artifacts: |
+              deploy/electron/dist/*.AppImage
+              deploy/electron/dist/latest-linux.yml
+          - os: macos-latest
+            label: macOS (DMG)
+            script: electron:dist:mac
+            artifacts: |
+              deploy/electron/dist/*.dmg
+              deploy/electron/dist/*.zip
+              deploy/electron/dist/latest-mac.yml
+          - os: windows-latest
+            label: Windows (NSIS)
+            script: electron:dist:win
+            artifacts: |
+              deploy/electron/dist/*.exe
+              deploy/electron/dist/latest.yml
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Cache electron-builder downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/electron
+            ~/.cache/electron-builder
+            ~/Library/Caches/electron
+            ~/Library/Caches/electron-builder
+            ~\AppData\Local\electron\Cache
+            ~\AppData\Local\electron-builder\Cache
+          key: ${{ runner.os }}-electron-cache-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-electron-cache-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (static export + Electron installer)
+        run: npm run ${{ matrix.script }}
+        env:
+          # Surface the release tag to the build, in case future scripts want it.
+          MESHYSMITH_RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+          # Lets electron-builder publish via GH if it ever needs to; we use
+          # softprops/action-gh-release for the upload, but the token also
+          # silences electron-builder's "no GH_TOKEN" warning.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List build output (for the workflow log)
+        shell: bash
+        run: |
+          echo "Contents of deploy/electron/dist:"
+          ls -la deploy/electron/dist || true
+
+      - name: Upload installers as workflow artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meshysmith-${{ matrix.os }}-${{ inputs.tag || github.ref_name }}
+          path: ${{ matrix.artifacts }}
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Attach to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: ${{ inputs.tag || github.ref_name }}
+          draft: ${{ inputs.draft || false }}
+          generate_release_notes: true
+          fail_on_unmatched_files: false
+          files: ${{ matrix.artifacts }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  summary:
+    name: Release summary
+    needs: build
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Write summary
+        run: |
+          {
+            echo "## MeshySmith Electron release"
+            echo ""
+            echo "Tag: \`${{ inputs.tag || github.ref_name }}\`"
+            echo ""
+            echo "Per-platform job results:"
+            echo ""
+            echo "- Linux (AppImage)"
+            echo "- macOS (DMG)"
+            echo "- Windows (NSIS)"
+            echo ""
+            echo "If any platform failed, check the matrix job above and re-run that single OS."
+          } >> "$GITHUB_STEP_SUMMARY"
