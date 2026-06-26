@@ -34,7 +34,20 @@ function isLocalSameOriginRequest(request: Request) {
   return !fetchSite || fetchSite === "same-origin" || fetchSite === "none";
 }
 
+// This route only makes sense when MeshySmith is being served from localhost (it
+// writes the user's exported STL/OBJ to a local folder on the same machine).
+// On Vercel — and in static export builds (Docker / Electron) — it can never
+// succeed, so we bail out early. That keeps the bundle tight and stops Turbopack
+// from following process.cwd() into the project root.
+const IS_LOCAL_FILESYSTEM_AVAILABLE = !process.env.VERCEL && process.env.STATIC_EXPORT !== "true";
+
 export async function POST(request: Request) {
+  if (!IS_LOCAL_FILESYSTEM_AVAILABLE) {
+    return NextResponse.json(
+      { error: "Local folder downloads are only available when MeshySmith runs on the same machine as your browser." },
+      { status: 404 },
+    );
+  }
   try {
     if (!isLocalSameOriginRequest(request)) {
       return NextResponse.json({ error: "Local folder downloads are only available from this localhost app" }, { status: 403 });
@@ -54,7 +67,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Choose a folder first" }, { status: 400 });
     }
 
-    const targetDirectory = path.resolve(path.isAbsolute(trimmedFolder) ? trimmedFolder : path.join(process.cwd(), trimmedFolder));
+    // The folder name comes from the request body, so the second segment is dynamic.
+    // We've already ensured this code path is only reachable on a same-origin localhost
+    // request; tell Turbopack not to trace the project root from this join.
+    const targetDirectory = path.resolve(
+      path.isAbsolute(trimmedFolder) ? trimmedFolder : path.join(/* turbopackIgnore: true */ process.cwd(), trimmedFolder),
+    );
     await fs.mkdir(targetDirectory, { recursive: true });
     const targetPath = path.resolve(targetDirectory, safeFileName(body.filename));
     const relativeTarget = path.relative(targetDirectory, targetPath);

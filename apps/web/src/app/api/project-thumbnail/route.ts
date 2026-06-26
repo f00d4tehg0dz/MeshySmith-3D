@@ -4,11 +4,23 @@ import { NextResponse } from "next/server";
 
 export const revalidate = false;
 
+// Statically scoped to .meshysmith/project-thumbnails under the working dir,
+// which is what Turbopack expects (a fixed subfolder of process.cwd()).
 const THUMBNAIL_DIR = path.join(process.cwd(), ".meshysmith", "project-thumbnails");
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
 const PNG_DATA_URL_PREFIX = "data:image/png;base64,";
 const MAX_THUMBNAIL_BYTES = 5 * 1024 * 1024;
 const MAX_THUMBNAIL_REQUEST_BYTES = Math.ceil((MAX_THUMBNAIL_BYTES * 4) / 3) + PNG_DATA_URL_PREFIX.length + 2048;
+
+// Project thumbnails are written to the local working directory, so this route
+// can only succeed on the same machine that's serving MeshySmith (dev server).
+// On Vercel and in static export builds we short-circuit to a 404.
+const IS_LOCAL_FILESYSTEM_AVAILABLE = !process.env.VERCEL && process.env.STATIC_EXPORT !== "true";
+const UNAVAILABLE = () =>
+  NextResponse.json(
+    { error: "Project thumbnails are only available when MeshySmith runs on the same machine as your browser." },
+    { status: 404 },
+  );
 
 function safeProjectId(projectId: string) {
   const clean = projectId.replace(/[^a-zA-Z0-9_-]/g, "");
@@ -54,6 +66,7 @@ function decodedBase64ByteLength(value: string) {
 }
 
 export async function GET(request: Request) {
+  if (!IS_LOCAL_FILESYSTEM_AVAILABLE) return UNAVAILABLE();
   if (!isLocalSameOriginRequest(request)) {
     return new NextResponse("Project thumbnails are only available from this localhost app", { status: 403 });
   }
@@ -78,6 +91,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!IS_LOCAL_FILESYSTEM_AVAILABLE) return UNAVAILABLE();
   if (!isLocalSameOriginRequest(request)) {
     return NextResponse.json({ error: "Project thumbnails are only available from this localhost app" }, { status: 403 });
   }
@@ -124,6 +138,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!IS_LOCAL_FILESYSTEM_AVAILABLE) return UNAVAILABLE();
   if (!isLocalSameOriginRequest(request)) {
     return NextResponse.json({ error: "Project thumbnails are only available from this localhost app" }, { status: 403 });
   }
