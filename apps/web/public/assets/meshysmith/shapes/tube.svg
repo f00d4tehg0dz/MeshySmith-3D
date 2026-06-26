@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <title>Tube</title>
+  <ellipse cx="32" cy="14" rx="20" ry="6"/>
+  <ellipse cx="32" cy="14" rx="12" ry="3.5"/>
+  <path d="M12 14 L12 50 M52 14 L52 50 M20 14 L20 50 M44 14 L44 50"/>
+  <path d="M12 50 A 20 6 0 0 0 52 50"/>
+</svg>

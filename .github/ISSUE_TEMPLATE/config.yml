@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/f00d4tehg0dz/MeshySmith-3D/security/advisories/new
+    about: Please report security issues privately via the GitHub Security Advisory flow.
+  - name: Question or discussion
+    url: https://github.com/f00d4tehg0dz/MeshySmith-3D/discussions
+    about: For usage questions, ideas, and show-and-tell, use Discussions instead of issues.

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <title>Cylinder</title>
+  <ellipse cx="32" cy="14" rx="20" ry="6"/>
+  <path d="M12 14 L12 50 M52 14 L52 50"/>
+  <path d="M12 50 A 20 6 0 0 0 52 50"/>
+</svg>

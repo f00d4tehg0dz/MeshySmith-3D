@@ -1,0 +1,9 @@
+services:
+  meshysmith:
+    image: meshysmith:local
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+    ports:
+      - "${MESHYSMITH_PORT:-3000}:80"
+    restart: unless-stopped

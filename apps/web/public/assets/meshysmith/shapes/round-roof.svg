@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <title>Round Roof</title>
+  <path d="M10 50 L10 28 A 22 22 0 0 1 54 28 L54 50 Z"/>
+  <path d="M10 28 A 22 7 0 0 0 54 28"/>
+  <path d="M10 50 A 22 6 0 0 0 54 50"/>
+</svg>

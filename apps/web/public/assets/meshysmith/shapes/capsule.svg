@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <title>Capsule</title>
+  <ellipse cx="32" cy="14" rx="14" ry="5"/>
+  <path d="M18 14 L18 50 A 14 5 0 0 0 46 50 L46 14"/>
+  <path d="M18 50 A 14 5 0 0 1 46 50"/>
+</svg>

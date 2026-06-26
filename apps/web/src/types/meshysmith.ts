@@ -1,0 +1,118 @@
+export type ShapeKind =
+  | "box"
+  | "cylinder"
+  | "sphere"
+  | "sketch"
+  | "scribble"
+  | "cone"
+  | "pyramid"
+  | "roof"
+  | "text"
+  | "roundRoof"
+  | "halfSphere"
+  | "torus"
+  | "tube"
+  | "ring"
+  | "wedge"
+  | "polygon"
+  | "icosahedron"
+  | "capsule"
+  | "octahedron"
+  | "dodecahedron"
+  | "torusKnot"
+  | "gear"
+  | "mesh";
+
+export type ShapeAsset = {
+  id: string;
+  name: string;
+  src: string;
+  kind: ShapeKind;
+  color: string;
+  hole?: boolean;
+};
+
+export type GridSize = "Off" | "0.1 mm" | "0.25 mm" | "0.5 mm" | "1.0 mm" | "2.0 mm" | "5.0 mm" | "Brick";
+export type MeasurementAccuracy = 1 | 2 | 3;
+
+export type WorkplaneWorkspaceSettings = {
+  width: number;
+  depth: number;
+  sizePreset: string;
+  gridBlockSize: number;
+  gridBlockPreset: string;
+  background: string;
+  showShadows: boolean;
+  showGrid: boolean;
+  cruiseShapes: boolean;
+  zoomSpeed: number;
+  units: string;
+  scale: string;
+  accuracy: MeasurementAccuracy;
+};
+
+export type AlignAxis = "x" | "y" | "z";
+export type AlignTarget = "min" | "center" | "max";
+export type AlignHandleStatus = {
+  axis: AlignAxis;
+  target: AlignTarget;
+  disabled: boolean;
+  aligned: boolean;
+  title: string;
+};
+
+export type WorkplaneShape = {
+  id: string;
+  name: string;
+  kind: ShapeKind;
+  color: string;
+  hole?: boolean;
+  x: number;
+  z: number;
+  elevation?: number;
+  size: number;
+  width: number;
+  depth: number;
+  height: number;
+  rotation: number;
+  rotationX?: number;
+  rotationZ?: number;
+  mirrorX?: boolean;
+  mirrorY?: boolean;
+  mirrorZ?: boolean;
+  radius?: number;
+  chamfer?: number;
+  teeth?: number;
+  toothDepth?: number;
+  knotP?: number;
+  knotQ?: number;
+  steps?: number;
+  sides?: number;
+  bevel?: number;
+  segments?: number;
+  topRadius?: number;
+  baseRadius?: number;
+  text?: string;
+  font?: string;
+  importedMesh?: {
+    positions: number[];
+    normals?: number[];
+    baseWidth: number;
+    baseDepth: number;
+    baseHeight: number;
+    triangleCount: number;
+    sourceFormat: "stl" | "obj" | "svg" | "json";
+  };
+  imagePlate?: {
+    dataUrl: string;
+    mimeType: string;
+    pixelWidth: number;
+    pixelHeight: number;
+  };
+  groupedShapes?: WorkplaneShape[];
+  groupedBaseWidth?: number;
+  groupedBaseDepth?: number;
+  groupedBaseHeight?: number;
+  locked?: boolean;
+  hidden?: boolean;
+};

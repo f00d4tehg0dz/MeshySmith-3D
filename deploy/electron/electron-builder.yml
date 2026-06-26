@@ -1,0 +1,50 @@
+appId: dev.f00d4tehg0dz.meshysmith
+productName: MeshySmith
+copyright: Copyright (c) f00d4tehg0dz
+directories:
+  output: deploy/electron/dist
+  buildResources: deploy/electron
+files:
+  - "package.json"
+  - "deploy/electron/main.js"
+  - "deploy/electron/icon.png"
+  - "deploy/electron/icon.ico"
+  - "apps/web/out/**/*"
+  - "!**/node_modules/**/{CHANGELOG.md,README.md,README,readme.md,readme}"
+  - "!**/node_modules/**/{test,__tests__,tests,powered-test,example,examples}"
+  - "!**/node_modules/**/*.d.ts"
+  - "!**/node_modules/**/.bin"
+asar: true
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: deploy/electron/icon.ico
+  artifactName: MeshySmith-${version}-${os}-${arch}.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  artifactName: MeshySmith-Setup-${version}.${ext}
+  shortcutName: MeshySmith
+  installerIcon: deploy/electron/icon.ico
+  uninstallerIcon: deploy/electron/icon.ico
+  installerHeaderIcon: deploy/electron/icon.ico
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.graphics-design
+  icon: deploy/electron/icon.png
+  artifactName: MeshySmith-${version}-${os}-${arch}.${ext}
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  category: Graphics
+  icon: deploy/electron/icon.png
+  artifactName: MeshySmith-${version}-${os}-${arch}.${ext}

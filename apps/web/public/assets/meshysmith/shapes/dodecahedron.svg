@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <title>Dodecahedron</title>
+  <path d="M32 6 L57 24 L48 54 L16 54 L7 24 Z"/>
+  <path d="M32 24 L46 33 L40 49 L24 49 L18 33 Z"/>
+  <path d="M32 6 L32 24 M57 24 L46 33 M7 24 L18 33 M48 54 L40 49 M16 54 L24 49"/>
+</svg>

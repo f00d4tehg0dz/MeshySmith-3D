@@ -1,0 +1,99 @@
+name: Bug report
+description: Report something broken or unexpected in MeshySmith.
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. A good repro lets us fix things faster.
+
+        **Security issues:** please use the [private security advisory flow](https://github.com/f00d4tehg0dz/MeshySmith-3D/security/advisories/new) instead.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I searched existing issues and didn't find a duplicate.
+          required: true
+        - label: I can reproduce the bug on the latest `main`.
+          required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One sentence describing what went wrong.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Concrete, ordered steps. Include the URL parameters or any imported file.
+      placeholder: |
+        1. Open MeshySmith
+        2. Add a Box from the Shapes menu
+        3. Set Fillet to 6
+        4. Open the inspector and click "Make Hole"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include error text or console output if any (with secrets redacted).
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deploy_target
+    attributes:
+      label: Where did it happen?
+      multiple: false
+      options:
+        - Browser (dev server, `npm run dev`)
+        - Browser (production build, Docker, or static export)
+        - Electron desktop app
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: MeshySmith version or commit
+      description: e.g. `v0.4.0`, or the short SHA you tested against.
+      placeholder: v0.4.0
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: Browser and OS
+      placeholder: Chrome 130 on Windows 11
+    validations:
+      required: true
+
+  - type: textarea
+    id: media
+    attributes:
+      label: Screenshots, recordings, or sample files
+      description: Drop images, GIFs, MP4s, or attach STL/OBJ files that trigger the bug.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else that might help (recent changes, related issues, hypotheses).
