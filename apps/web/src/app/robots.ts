@@ -1,5 +1,9 @@
 import type { MetadataRoute } from "next";
 
+// Required for `output: "export"` (static export) so Next 16 emits robots.txt
+// as a static file rather than a dynamic route handler.
+export const dynamic = "force-static";
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://meshysmith.app";
 
 export default function robots(): MetadataRoute.Robots {

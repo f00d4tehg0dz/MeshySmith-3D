@@ -1,5 +1,9 @@
 import type { MetadataRoute } from "next";
 
+// Required for `output: "export"` (static export) so Next 16 emits this as a
+// static file instead of treating it as a dynamic route handler.
+export const dynamic = "force-static";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "MeshySmith — 3D design editor",
