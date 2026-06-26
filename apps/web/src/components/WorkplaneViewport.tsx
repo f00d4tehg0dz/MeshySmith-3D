@@ -3304,13 +3304,17 @@ function setCameraMode(state: ThreeState, mode: CameraMode) {
 
 function rotateCameraFromCubeDrag(state: ThreeState | null, dx: number, dy: number) {
   if (!state) return;
+  // Trackball convention: the cube follows the user's finger. Dragging the cube to
+  // the right spins the cube to the right, which means the camera orbits in the same
+  // direction so the face under the cursor stays under the cursor. Dragging down
+  // tips the cube down — the camera dives below the equator and we look up at it.
   const sensitivity = 0.008;
   const minPolar = 0.06;
   const maxPolar = Math.PI * 0.68;
   const offset = state.camera.position.clone().sub(state.controls.target);
   const spherical = new THREE.Spherical().setFromVector3(offset);
-  spherical.theta -= dx * sensitivity;
-  spherical.phi = THREE.MathUtils.clamp(spherical.phi - dy * sensitivity, minPolar, maxPolar);
+  spherical.theta += dx * sensitivity;
+  spherical.phi = THREE.MathUtils.clamp(spherical.phi + dy * sensitivity, minPolar, maxPolar);
   offset.setFromSpherical(spherical);
   state.camera.position.copy(state.controls.target).add(offset);
   state.camera.lookAt(state.controls.target);

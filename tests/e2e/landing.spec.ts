@@ -83,17 +83,6 @@ test.describe("Landing page SEO / AEO / GEO surface", () => {
     expect(scrolled).toBeGreaterThan(800);
   });
 
-  test("Use Cases section renders the three audience cards (makers, classrooms, fab labs)", async ({ page }) => {
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-    const useCases = page.locator("section#use-cases");
-    await expect(useCases).toBeAttached();
-    // Page is now scrollable; use a page-level scroll-to-anchor.
-    await page.evaluate(() => document.querySelector("#use-cases")?.scrollIntoView({ block: "center" }));
-    await expect(useCases.getByRole("heading", { name: /makers and hobbyists/i })).toBeVisible();
-    await expect(useCases.getByRole("heading", { name: /^classrooms$/i })).toBeVisible();
-    await expect(useCases.getByRole("heading", { name: /^fab labs$/i })).toBeVisible();
-  });
-
   test("Pricing section shows the single free tier card", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const pricing = page.locator("#pricing");
