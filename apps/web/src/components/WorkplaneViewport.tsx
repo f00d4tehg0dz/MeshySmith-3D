@@ -827,8 +827,29 @@ function signedAngleAroundAxis(start: THREE.Vector3, current: THREE.Vector3, axi
 
 const ROTATION_HANDLE_SIDE_HYSTERESIS = 0.22;
 const ROTATION_HANDLE_DOMINANCE_HYSTERESIS = 0.18;
-const ROTATION_UPPER_HANDLE_ICON_ANGLE = 0;
-const ROTATION_BOTTOM_HANDLE_ICON_ANGLE = 0;
+
+// The rotate-handle icon SVG draws a horizontal arc whose implicit rotation
+// axis is vertical on the page. To make the icon read like the rotation the
+// user will get, we rotate it so its axis aligns with the projected world
+// rotation axis. The icon is 180°-symmetric (two arrowheads), so clamp to
+// (-90°, 90°] to avoid the icon flipping as the camera crosses the axis.
+function iconAngleForRotationAxis(
+  worldCenter: THREE.Vector3,
+  axis: THREE.Vector3,
+  project: (point: THREE.Vector3) => { x: number; y: number },
+): number {
+  const center = project(worldCenter);
+  const offset = project(worldCenter.clone().add(axis));
+  const dx = offset.x - center.x;
+  const dy = offset.y - center.y;
+  if (Math.hypot(dx, dy) < 0.001) {
+    return 0;
+  }
+  let angle = Math.atan2(dx, -dy);
+  if (angle > Math.PI / 2) angle -= Math.PI;
+  if (angle <= -Math.PI / 2) angle += Math.PI;
+  return THREE.MathUtils.radToDeg(angle);
+}
 
 function signedRotationSide(value: number, previous: RotationHandleSide | undefined, positiveSide: RotationHandleSide, negativeSide: RotationHandleSide) {
   if (previous === positiveSide && value > -ROTATION_HANDLE_SIDE_HYSTERESIS) {
@@ -4040,6 +4061,9 @@ function syncTransformOverlay(
   const rotateLeft = screenOffsetFromCenter(project(sidePoint(rotationSides.x, worldMaxY)), 24);
   const rotateRight = screenOffsetFromCenter(project(sidePoint(rotationSides.z, worldMaxY)), 28);
   const rotateBottom = screenOffsetFromCenter(project(sidePoint(rotationSides.y, worldMinY)), 34);
+  const rotateLeftAngle = iconAngleForRotationAxis(worldCenter, rotationAxisVector("x"), project);
+  const rotateRightAngle = iconAngleForRotationAxis(worldCenter, rotationAxisVector("z"), project);
+  const rotateBottomAngle = iconAngleForRotationAxis(worldCenter, rotationAxisVector("y"), project);
   const xFaceCenter = sidePoint(rotationSides.x, worldCenterY);
   const zFaceCenter = sidePoint(rotationSides.z, worldCenterY);
   const yFaceCenter = verticalBase;
@@ -4104,9 +4128,9 @@ function syncTransformOverlay(
       { key: liftHandleKey, className: showLowerHandles ? "height-lift lower" : "height-lift", kind: "lift" as const, x: liftPoint.x, y: liftPoint.y, title: "Lift" },
     ],
     rotateHandles: [
-      { key: "rotate-left", className: "screen-left", x: rotateLeft.x, y: rotateLeft.y, angle: ROTATION_UPPER_HANDLE_ICON_ANGLE },
-      { key: "rotate-right", className: "screen-right", x: rotateRight.x, y: rotateRight.y, angle: ROTATION_UPPER_HANDLE_ICON_ANGLE },
-      { key: "rotate-bottom", className: "screen-bottom", x: rotateBottom.x, y: rotateBottom.y, angle: ROTATION_BOTTOM_HANDLE_ICON_ANGLE },
+      { key: "rotate-left", className: "screen-left", x: rotateLeft.x, y: rotateLeft.y, angle: rotateLeftAngle },
+      { key: "rotate-right", className: "screen-right", x: rotateRight.x, y: rotateRight.y, angle: rotateRightAngle },
+      { key: "rotate-bottom", className: "screen-bottom", x: rotateBottom.x, y: rotateBottom.y, angle: rotateBottomAngle },
     ],
     dimensions: dimensionMarks,
     rotationWheel: rotationWheels.y,
